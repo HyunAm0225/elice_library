@@ -30,20 +30,23 @@ def login():
     return jsonify(access_token=access_token)
 
 
-@bp.route('/signup', methods=["POST"])
+@bp.route('/signup', methods=["POST", "GET"])
 def signup():
-    email = request.form['email']
-    fullname = request.form['fullname']
-    password1 = request.form['password1']
-    password2 = request.form['password2']
-    user = User.query.filter_by(email=email).first()
-    if password1 != password2:
-        return jsonify(message="비밀번호를 다시 확인해 주세요.")
-    if user:
-        return jsonify(message="이미 같은 아이디가 존재합니다.")
+    if request.method == "GET":
+        return render_template("account/register.html")
+    else:
+        email = request.form['email']
+        fullname = request.form['fullname']
+        password1 = request.form['password1']
+        password2 = request.form['password2']
+        user = User.query.filter_by(email=email).first()
+        if password1 != password2:
+            return "비밀번호를 확인해 주세요"
+        if user:
+            return "이미 등록된 유저입니다."
 
-    new_user = User(email=email, fullname=fullname, password=bcrypt.generate_password_hash(password1).decode('utf-8'))
-    db.session.add(new_user)
-    db.session.commit()
+        new_user = User(email=email, fullname=fullname, password=bcrypt.generate_password_hash(password1).decode('utf-8'))
+        db.session.add(new_user)
+        db.session.commit()
 
-    return jsonify(message="회원가입 성공!")
+        return redirect('/')

@@ -52,17 +52,34 @@
           </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
+        {% if g.user %}
+          <li>
+            <a href="#" class="btn btn-outline-success"
+              ><span class="fas fa-user"></span>{{ g.user.username }}</a
+            >
+          </li>
+          <li>&nbsp;&nbsp;&nbsp;</li>
+        {% else %}
           <li>
             <a href={{ url_for('account.signup') }} class="btn btn-outline-success"
               ><span class="fas fa-user"></span>&nbsp;회원가입</a
             >
           </li>
+        {% endif %}
           <li>&nbsp;&nbsp;&nbsp;</li>
+          {% if g.user %}
           <li>
-            <a href="#" class="btn btn-outline-success"
+            <a href="{{ url_for('account.logout') }}" class="btn btn-outline-success"
+              ><span class="fas fa-sign-in-alt"></span>&nbsp;로그아웃</a
+            >
+          </li>
+          {% else %}
+          <li>
+            <a href="{{ url_for('account.login') }}" class="btn btn-outline-success"
               ><span class="fas fa-sign-in-alt"></span>&nbsp;로그인</a
             >
           </li>
+          {% endif %}
           <li>&nbsp;&nbsp;&nbsp;</li>
         </ul>
       </div>

@@ -11,6 +11,10 @@
           <!-- <p class="card-text">{{ book.description }}</p> -->
           <h5>재고 : {{ book.stock }}</h5>
           <a href="/book/detail/{{ book.id }}" class="btn btn-primary">자세히</a>
+          <form action="book/rent/{{ book.id }}" method="post" class="post-form">
+            <input type="hidden" value="{{ book.id }}" name="book_id" />
+            <input type="submit" value="대출" class="btn btn-primary" />
+          </form>
         </div>
       </div>
     </div>

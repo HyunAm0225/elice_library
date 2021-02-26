@@ -26,7 +26,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if not user:
             error = "존재하지 않는 사용자입니다."
-        elif not check_password_hash(user.password, form.password.data):
+        elif not user.check_password(form.password.data):
             error = "비밀번호가 올바르지 않습니다."
         if error is None:
             session.clear()
@@ -42,7 +42,7 @@ def signup():
     if request.method == "POST" and form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if not user:
-            user = User(fullname=form.username.data,
+            user = User(fullname=form.fullname.data,
                         password=bcrypt.generate_password_hash(form.password1.data),
                         email=form.email.data)
             db.session.add(user)

@@ -55,7 +55,13 @@
         {% if g.user %}
           <li>
             <a href="#" class="btn btn-outline-success"
-              ><span class="fas fa-user"></span>{{ g.user.username }}</a
+              ><span class="fas fa-user"></span>대여하기</a
+            >
+          </li>
+          <li>&nbsp;&nbsp;&nbsp;</li>
+          <li>
+            <a href="#" class="btn btn-outline-success"
+              ><span class="fas fa-user"></span>반납하기</a
             >
           </li>
           <li>&nbsp;&nbsp;&nbsp;</li>
@@ -65,8 +71,8 @@
               ><span class="fas fa-user"></span>&nbsp;회원가입</a
             >
           </li>
-        {% endif %}
           <li>&nbsp;&nbsp;&nbsp;</li>
+        {% endif %}
           {% if g.user %}
           <li>
             <a href="{{ url_for('account.logout') }}" class="btn btn-outline-success"

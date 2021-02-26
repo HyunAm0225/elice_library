@@ -1,6 +1,6 @@
 from elice import db, bcrypt
 from werkzeug.security import generate_password_hash, check_password_hash
-import datetime
+from datetime import datetime
 # 유저 DB
 
 
@@ -8,10 +8,10 @@ class User(db.Model):
     __table_name__ = 'user'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     fullname = db.Column(db.String(100), unique=False, nullable=False)
-    email = db.Column(db.String(120), primary_key=True, unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
     comment = db.relationship('Comment', backref=db.backref('user'))
-    rent = db.relationship('Rent', backref=db.backref('user'))
+    rent = db.relationship('Rental', backref=db.backref('user'))
 
     def __init__(self, fullname, email, password):
         self.fullname = fullname
@@ -41,16 +41,16 @@ class Book(db.Model):
     img_url = db.Column(db.String(50), nullable=False)
     stock = db.Column(db.Integer, nullable=False)
     comment = db.relationship('Comment', backref=db.backref('book'))
-    rent = db.relationship('Rent', backref=db.backref('book'))
 
 
-class Rent(db.Model):
-    __table_name__ = 'rent'
+class Rental(db.Model):
+    __table_name__ = 'rental'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    book_id = db.Column(db.String(50), db.ForeignKey('book.book_name', ondelete="CASCADE"), nullable=False)
-    user_id = db.Column(db.String(100), db.ForeignKey('user.email', ondelete="CASCADE"), nullable=False)
-    rent_date = db.Column(db.DateTime, nullable=False)
-    return_date = db.Column(db.DateTime, nullable=True)
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id', ondelete="CASCADE"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    rent = db.relationship('Book', backref=db.backref('rental'))
+    rent_date = db.Column(db.DateTime, nullable=False, default=datetime.today().date())
+    return_date = db.Column(db.DateTime, nullable=True, default=None)
 
 
 class Comment(db.Model):
@@ -58,5 +58,5 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     comment = db.Column(db.String(100), nullable=False)
     stars = db.Column(db.Integer, nullable=False)
-    book_name = db.Column(db.String(50), db.ForeignKey('book.book_name', ondelete="CASCADE"), nullable=False)
-    create_user = db.Column(db.String(100), db.ForeignKey('user.email', ondelete="CASCADE"), nullable=False)
+    book_name = db.Column(db.Integer, db.ForeignKey('book.id', ondelete="CASCADE"), nullable=False)
+    create_user = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)

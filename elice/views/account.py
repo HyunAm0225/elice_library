@@ -1,15 +1,16 @@
 # account.py
-from flask import Blueprint
-from flask import request, render_template, session, url_for, redirect, jsonify
-from flask_jwt_extended import *
+from flask import Blueprint, flash
+from flask import request, render_template, session, url_for, redirect, jsonify, g
+# from flask_jwt_extended import *
 from datetime import timedelta, datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from elice import db, bcrypt
 from elice.models import User
+from elice.forms import UserCreateForm, UserLoginForm
 
 bp = Blueprint("account", __name__, template_folder="templates", url_prefix='/account')
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+# ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
 @bp.route('/')
@@ -17,36 +18,51 @@ def account_main():
     return "account main test"
 
 
-@bp.route('/login', methods=['POST'])
+@bp.route('/login', methods=['POST', 'GET'])
 def login():
-    email = request.form.get('email')
-    password = request.form.get('password')
-    user = User.query.filter_by(email=email).first()
-    if not user or not user.check_password(password):
-        return jsonify(message="user가 없거나 비밀번호가 틀립니다.")
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        identity=email, expires_delta=access_token_expires)
-    return jsonify(access_token=access_token)
+    form = UserLoginForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        error = None
+        user = User.query.filter_by(email=form.email.data).first()
+        if not user:
+            error = "존재하지 않는 사용자입니다."
+        elif not check_password_hash(user.password, form.password.data):
+            error = "비밀번호가 올바르지 않습니다."
+        if error is None:
+            session.clear()
+            session['user_id'] = user.id
+            return redirect(url_for('main.index'))
+        flash(error)
+    return render_template('account/login.html', form=form)
 
 
-@bp.route('/signup', methods=["POST", "GET"])
+@bp.route('/signup/', methods=["POST", "GET"])
 def signup():
-    if request.method == "GET":
-        return render_template("account/register.html")
+    form = UserCreateForm()
+    if request.method == "POST" and form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if not user:
+            user = User(fullname=form.username.data,
+                        password=bcrypt.generate_password_hash(form.password1.data),
+                        email=form.email.data)
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for('main.index'))
+        else:
+            flash('이미 존재하는 이메일입니다.')
+    return render_template('account/register.html', form=form)
+
+
+@bp.before_app_request
+def load_logged_in_user():
+    user_id = session.get('user_id')
+    if user_id is None:
+        g.user = None
     else:
-        email = request.form['email']
-        fullname = request.form['fullname']
-        password1 = request.form['password1']
-        password2 = request.form['password2']
-        user = User.query.filter_by(email=email).first()
-        if password1 != password2:
-            return "비밀번호를 확인해 주세요"
-        if user:
-            return "이미 등록된 유저입니다."
+        g.user = User.query.get(user_id)
 
-        new_user = User(email=email, fullname=fullname, password=bcrypt.generate_password_hash(password1).decode('utf-8'))
-        db.session.add(new_user)
-        db.session.commit()
 
-        return redirect('/')
+@bp.route('/logout/')
+def logout():
+    session.clear()
+    return redirect(url_for('main.index'))

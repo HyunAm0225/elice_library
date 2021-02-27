@@ -10,8 +10,6 @@ class User(db.Model):
     fullname = db.Column(db.String(100), unique=False, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
-    comment = db.relationship('Comment', backref=db.backref('user'))
-    rent = db.relationship('Rental', backref=db.backref('user'))
 
     def __init__(self, fullname, email, password):
         self.fullname = fullname
@@ -40,7 +38,6 @@ class Book(db.Model):
     link = db.Column(db.String(256))
     img_url = db.Column(db.String(50), nullable=False)
     stock = db.Column(db.Integer, nullable=False)
-    comment = db.relationship('Comment', backref=db.backref('book'))
 
 
 class Rental(db.Model):
@@ -48,7 +45,8 @@ class Rental(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     book_id = db.Column(db.Integer, db.ForeignKey('book.id', ondelete="CASCADE"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    rent = db.relationship('Book', backref=db.backref('rental'))
+    book = db.relationship('Book', backref=db.backref('rent_set'))
+    user = db.relationship('User', backref=db.backref('rent_set'))
     rent_date = db.Column(db.DateTime, nullable=False, default=datetime.today().date())
     return_date = db.Column(db.DateTime, nullable=True, default=None)
 
@@ -58,5 +56,7 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     comment = db.Column(db.String(100), nullable=False)
     stars = db.Column(db.Integer, nullable=False)
-    book_name = db.Column(db.Integer, db.ForeignKey('book.id', ondelete="CASCADE"), nullable=False)
-    create_user = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id', ondelete="CASCADE"), nullable=False)
+    book = db.relationship('Book', backref=db.backref('comment_set'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
+    user = db.relationship('User', backref=db.backref('comment_set'))

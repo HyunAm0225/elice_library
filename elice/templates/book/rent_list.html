@@ -9,9 +9,11 @@
         <div class="card-body">
           <h5 class="card-title">{{ book_rental.book.book_name }}</h5>
         </div>
-        {# 대여날짜 : {{ book_rental.rent_date.strftime('%Y-%m-%d') }} #}
+        <p>대여날짜 : {{ book_rental.rent_date.strftime('%Y-%m-%d') }}</p>
         <br />
-        {# 반납날짜 : {{ book_rental.return_date.strftime('%Y-%m-%d') }} #}
+        {% if book_rental.return_date %}
+        <p>반납날짜 : {{ book_rental.return_date.strftime('%Y-%m-%d') }}</p>
+        {% endif %}
       </div>
     </div>
     {% endfor %}

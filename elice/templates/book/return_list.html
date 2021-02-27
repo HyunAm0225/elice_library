@@ -1,0 +1,21 @@
+{% extends "base/base.html" %} {% block content %}
+
+<div class="container">
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for return_book in return_book_list %}
+    <div class="col">
+      <div class="card" style="width: 18rem">
+        <img src="{{ return_book.book.img_url }}" class="card-img-top" alt="..." />
+        <div class="card-body">
+          <h5 class="card-title">{{ return_book.book.book_name }}</h5>
+          <form action="/book/return_list" method="post" class="post-form">
+            <input type="hidden" value="{{ return_book.book.id }}" name="book_id" />
+            <input type="submit" value="반납" class="btn btn-primary" />
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

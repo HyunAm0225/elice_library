@@ -30,7 +30,7 @@
   {# navbar 구현 #}
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <a class="navbar-brand" href={{ url_for('book.index') }}>Elice_Library</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -54,13 +54,13 @@
         <ul class="nav navbar-nav navbar-right">
         {% if g.user %}
           <li>
-            <a href="#" class="btn btn-outline-success"
-              ><span class="fas fa-user"></span>대여하기</a
+            <a href="{{ url_for('book.rent_list') }}" class="btn btn-outline-success"
+              ><span class="fas fa-user"></span>대여기록</a
             >
           </li>
           <li>&nbsp;&nbsp;&nbsp;</li>
           <li>
-            <a href="#" class="btn btn-outline-success"
+            <a href="{{ url_for('book.return_list') }}" class="btn btn-outline-success"
               ><span class="fas fa-user"></span>반납하기</a
             >
           </li>

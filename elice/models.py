@@ -47,7 +47,7 @@ class Rental(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     book = db.relationship('Book', backref=db.backref('rent_set'))
     user = db.relationship('User', backref=db.backref('rent_set'))
-    rent_date = db.Column(db.DateTime, nullable=False, default=datetime.today().date())
+    rent_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
     return_date = db.Column(db.DateTime, nullable=True, default=None)
 
 

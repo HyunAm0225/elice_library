@@ -1,0 +1,20 @@
+{% extends "base/base.html" %} {% block content %}
+
+<div class="container">
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for book_rental in book_rentals %}
+    <div class="col">
+      <div class="card" style="width: 18rem">
+        <img src="{{ book_rental.book.img_url }}" class="card-img-top" alt="..." />
+        <div class="card-body">
+          <h5 class="card-title">{{ book_rental.book.book_name }}</h5>
+        </div>
+        {# 대여날짜 : {{ book_rental.rent_date.strftime('%Y-%m-%d') }} #}
+        <br />
+        {# 반납날짜 : {{ book_rental.return_date.strftime('%Y-%m-%d') }} #}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

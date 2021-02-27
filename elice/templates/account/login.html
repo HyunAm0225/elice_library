@@ -1,28 +1,142 @@
-{% extends "base/base.html" %} {% block content %}
-<div class="container my-3">
-  <form method="post" class="post-form">
-    {{ form.csrf_token }} {% include "base/form_errors.html" %}
-    <div class="form-group">
-      <label for="email">사용자 이메일</label>
-      <input
-        type="email"
-        class="form-control"
-        name="email"
-        id="email"
-        value="{{ form.email.data or '' }}"
-      />
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"
+      integrity="sha384-KsvD1yqQ1/1+IA7gi3P0tyJcT3vR+NdBTt13hSJ2lnve8agRGXTTyNaBYmCR/Nwi"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js"
+      integrity="sha384-nsg8ua9HAw1y0W1btsyWgBklPnCUAFLuTMS2G72MMONqmOymq585AcH49TLBQObG"
+      crossorigin="anonymous"
+    ></script>
+    <style type="text/css">
+      * {
+        margin: 0px;
+        padding: 0px;
+      }
+      .login {
+        height: 100vh;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+      }
+      .account-login {
+        width: 500px;
+      }
+      .form-control:focus {
+        box-shadow: none;
+      }
+      p a {
+        padding-left: 2px;
+      }
+      .account-login h1 {
+        font-size: 50px;
+        text-align: left;
+        color: black;
+        text-transform: uppercase;
+        font-weight: bold;
+        border-radius: 5px;
+      }
+      .login-form input {
+        width: 100%;
+        position: relative;
+        border-bottom: 1px solid #a39e9e;
+        padding: 0;
+        border-top: 0px;
+        border-left: 0px;
+        border-right: 0px;
+        box-shadow: none;
+        height: 63px;
+        border-radius: 0px;
+      }
+      .login-form {
+        background: #fff;
+        float: left;
+        width: 100%;
+        padding: 40px;
+        border-radius: 5px;
+      }
+      input.btn {
+        width: 100%;
+        background: #0066ff;
+        font-size: 20px;
+        padding: 11px;
+        color: #fff;
+        border: 0px;
+        margin: 10px 0px 20px;
+        font-weight: bold;
+      }
+      .btn:hover {
+        color: #fff;
+        opacity: 0.8;
+      }
+      p {
+        float: left;
+        width: 100%;
+        text-align: center;
+        font-size: 14px;
+      }
+      .remember {
+        float: left;
+        width: 100%;
+        margin: 10px 0 0;
+      }
+      @media (max-width: 767px) {
+        .account-login {
+          width: 90%;
+        }
+      }
+    </style>
+    <title>Login</title>
+  </head>
+  <body>
+    <div class="container my-3"></div>
+    <div class="login">
+      <div class="account-login">
+        <h1 class="text-center">Login</h1>
+        <form method="post" class="post-form">
+          {{ form.csrf_token }} {% include "base/form_errors.html" %}
+          <div class="form-group">
+            <label for="email">사용자 이메일</label>
+            <input
+              type="email"
+              class="form-control"
+              name="email"
+              id="email"
+              value="{{ form.email.data or '' }}"
+            />
+          </div>
+          <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input
+              type="password"
+              class="form-control"
+              name="password"
+              id="password"
+              value="{{ form.password.data or '' }}"
+            />
+          </div>
+          <input type="submit" class="btn btn-primary form-control rounded-pill" value="로그인" />
+          <p>아이디가 없으신가요?<a href="{{ url_for('account.signup') }}">회원가입</a></p>
+        </form>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="password">비밀번호</label>
-      <input
-        type="password"
-        class="form-control"
-        name="password"
-        id="password"
-        value="{{ form.password.data or '' }}"
-      />
-    </div>
-    <button type="submit" class="btn btn-primary">로그인</button>
-  </form>
-</div>
-{% endblock %}
+  </body>
+</html>

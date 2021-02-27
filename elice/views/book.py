@@ -19,9 +19,9 @@ def detail(book_id):
     return render_template('book/detail.html', book=book)
 
 
-@bp.route('/rent/', methods=["POST"])
-def rent():
-    book_id = request.form.get("book_id")
+@bp.route('/rent/<int:book_id>', methods=["POST"])
+def rent(book_id):
+    # book_id = request.form.get("book_id")
     user_id = session['user_id']
     book = Book.query.filter_by(id=book_id).first()
     if book.stock > 0:

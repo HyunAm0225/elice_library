@@ -7,7 +7,7 @@ from flask_jwt_extended import *
 import config
 
 db = SQLAlchemy()
-migrate = Migrate()
+migrate = Migrate(compare_type=True)
 bcrypt = Bcrypt()
 api = Api()
 jwt = JWTManager()
@@ -17,6 +17,8 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(config)
     app.config['SECRET_KEY'] = 'bee11777d0d22065bdb8fc7edafb0557'
+    # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
     # ORM
     db.init_app(app)
     bcrypt.init_app(app)

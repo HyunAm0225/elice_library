@@ -1,8 +1,10 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, url_for, redirect
+from elice.decorator import login_required
 
 bp = Blueprint('main', __name__, url_prefix='/')
 
 
 @bp.route('/')
+@login_required
 def index():
-    return render_template('main_views/index.html')
+    return redirect(url_for('book.index'))

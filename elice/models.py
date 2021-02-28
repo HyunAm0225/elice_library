@@ -45,8 +45,8 @@ class Rental(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     book_id = db.Column(db.Integer, db.ForeignKey('book.id', ondelete="CASCADE"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    book = db.relationship('Book', backref=db.backref('rent_set'))
-    user = db.relationship('User', backref=db.backref('rent_set'))
+    book = db.relationship('Book', backref=db.backref('rental_set'))
+    user = db.relationship('User', backref=db.backref('rental_set'))
     rent_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
     return_date = db.Column(db.DateTime, nullable=True, default=None)
 

@@ -1,6 +1,6 @@
 from flask import Blueprint, flash
 from flask import request, render_template, session, url_for, redirect, jsonify
-from elice.models import Book, Rental
+from elice.models import Book, Rental, Comment
 from elice import db
 from datetime import datetime
 from elice.decorator import login_required
@@ -11,17 +11,18 @@ bp = Blueprint('book', __name__, url_prefix='/book')
 
 @bp.route('/')
 @login_required
-def index(methods=["GET"]):
-    if request.method == "GET":
-        books = Book.query.all()
-        return render_template("book/index.html", books=books)
+def index():
+    books = Book.query.all()
+    return render_template("book/index.html", books=books)
 
 
 @bp.route('/detail/<int:book_id>')
 @login_required
 def detail(book_id):
     book = Book.query.filter_by(id=book_id).first()
-    return render_template('book/detail.html', book=book)
+    comments = Comment.query.filter_by(book_id=book_id).all()
+    # print(comments)
+    return render_template('book/detail.html', book=book, comments=comments)
 
 
 @bp.route('/rent/<int:book_id>', methods=["POST"])
@@ -61,9 +62,18 @@ def return_list():
         db.session.commit()
         return redirect(url_for('book.return_list'))
 
-    book_rentals = Rental.query.filter_by(user_id=user_id).all()
-    not_return_book_list = []
-    for book_rental in book_rentals:
-        if book_rental.return_date is None:
-            not_return_book_list.append(book_rental)
-    return render_template('book/return_list.html', return_book_list=not_return_book_list)
+    book_rentals = Rental.query.filter_by(user_id=user_id, return_date=None).all()
+    return render_template('book/return_list.html', return_book_list=book_rentals)
+
+
+@bp.route('/comment/<int:book_id>', methods=["POST"])
+def comment(book_id):
+    user_id = session['user_id']
+    stars = request.form.get("rating")
+    comment = request.form.get("comment")
+    if comment == None or stars == None:
+        flash("모든 항목을 채워주세요")
+    new_comment = Comment(comment=comment, stars=stars, user_id=user_id, book_id=book_id)
+    db.session.add(new_comment)
+    db.session.commit()
+    return redirect(url_for('book.detail', book_id=book_id))

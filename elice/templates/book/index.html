@@ -2,18 +2,23 @@
 
 <div class="container">
   <div class="row row-cols-1 row-cols-md-3 g-4">
-    {% include "base/form_errors.html" %} {% for book in books %}
+    {%with messages = get_flashed_messages()%} {%if messages %}
+    <script type="text/javascript">
+      alert("{{messages[-1]}}");
+    </script>
+    {%endif%} {%endwith%} {% for book in books %}
     <div class="col">
       <div class="card" style="width: 18rem">
         <img src="{{ book.img_url }}" class="card-img-top" alt="..." />
         <div class="card-body">
-          <h5 class="card-title">{{ book.book_name }}</h5>
+          <a href="/book/detail/{{ book.id }}" style="text-decoration: None; color: black"
+            ><h5 class="card-title">{{ book.book_name }}</h5></a
+          >
           <!-- <p class="card-text">{{ book.description }}</p> -->
           <h5>재고 : {{ book.stock }}</h5>
-          <a href="/book/detail/{{ book.id }}" class="btn btn-primary">자세히</a>
           <form action="/book/rent/{{ book.id }}" method="post" class="post-form">
             <input type="hidden" value="{{ book.id }}" name="book_id" />
-            <input type="submit" value="대출" class="btn btn-primary" />
+            <input type="submit" value="대출" class="btn btn-primary form-control rounded-pill" />
           </form>
         </div>
       </div>

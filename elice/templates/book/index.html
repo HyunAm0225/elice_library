@@ -2,7 +2,7 @@
 
 <div class="container">
   <div class="row row-cols-1 row-cols-md-3 g-4">
-    {% for book in books %}
+    {% include "base/form_errors.html" %} {% for book in books %}
     <div class="col">
       <div class="card" style="width: 18rem">
         <img src="{{ book.img_url }}" class="card-img-top" alt="..." />

@@ -12,7 +12,9 @@ bp = Blueprint('book', __name__, url_prefix='/book')
 @bp.route('/')
 @login_required
 def index():
-    books = Book.query.all()
+    page = request.args.get('page', type=int, default=1)
+    books = Book.query
+    books = books.paginate(page, per_page=8)
     return render_template("book/index.html", books=books)
 
 

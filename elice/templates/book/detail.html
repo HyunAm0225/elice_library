@@ -70,7 +70,7 @@
   </div>
   <div class="jumbotron" style="margin: 2rem">
     <h5>댓글 목록</h5>
-    <div style="background-color: #f1f3f5">
+    <div style="background-color: #f1f3f5; margin:1rem; padding:1rem">
       {% for comment in comments %}
       <p>작성자 : {{ comment.user.fullname }}</p>
       <p>댓글 : {{ comment.comment }}</p>
@@ -81,7 +81,7 @@
           <h5 id="star-{{ n }}" class="star" style="color: gold">★</h5>
           {% endif %} {% endfor %}
         </span>
-
+        <hr>
       {% endfor %}
     </div>
   </div>

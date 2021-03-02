@@ -12,8 +12,8 @@
     }
 
     .rate-area:not(:checked) > label {
-      float: right;
-      width: 1.1em;
+        float:right;
+      width: 1.0em;
       overflow: hidden;
       white-space: nowrap;
       cursor: pointer;
@@ -41,8 +41,12 @@
     .rate-area > label:hover ~ input:checked ~ label {
       color: gold;
     }
+
     .jumbotron {
       margin: 2rem;
+    }
+    .star {
+      display: inline;
     }
   </style>
 </head>
@@ -64,24 +68,32 @@
       </div>
     </div>
   </div>
-  <div class="jumbotron">
+  <div class="jumbotron" style="margin: 2rem">
     <h5>댓글 목록</h5>
-    <div style="background-color: #f1f3f5"">
-        {% for comment in comments %}
-            <p>작성자 : {{ comment.user.fullname }}</p>
-            <p>댓글 : {{ comment.comment }}</p>
-        {% endfor %}
+    <div style="background-color: #f1f3f5">
+      {% for comment in comments %}
+      <p>작성자 : {{ comment.user.fullname }}</p>
+      <p>댓글 : {{ comment.comment }}</p>
+
+          {% for n in range(1,6) %} {% if comment.stars<n %}
+          <h5 id="star-{{ n }}" class="star" style="color: gray">★</h5>
+          {% else %}
+          <h5 id="star-{{ n }}" class="star" style="color: gold">★</h5>
+          {% endif %} {% endfor %}
+        </span>
+
+      {% endfor %}
     </div>
   </div>
   {% with messages = get_flashed_messages() %} {% if messages %}
-    <script type="text/javascript">
-      alert("{{messages[-1]}}");
-    </script>
-    {% endif %} {% endwith %}
+  <script type="text/javascript">
+    alert("{{messages[-1]}}");
+  </script>
+  {% endif %} {% endwith %}
   <div class="jumbotron">
     <h5>댓글</h5>
     <form action="/book/comment/{{ book.id }}" class="form-inline" method="POST">
-      <textarea class="form-control" name = "comment"></textarea>
+      <textarea class="form-control" name="comment"></textarea>
       <ul class="rate-area">
         <input type="radio" id="5-star" name="rating" value="5" /><label
           for="5-star"

@@ -23,7 +23,7 @@ def index():
 def detail(book_id):
     book = Book.query.filter_by(id=book_id).first()
     comments = Comment.query.filter_by(book_id=book_id).all()
-    # print(comments)
+    # 여기서 처리하는지?.
     return render_template('book/detail.html', book=book, comments=comments)
 
 

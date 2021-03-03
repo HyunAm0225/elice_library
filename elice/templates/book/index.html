@@ -1,5 +1,9 @@
 {% extends "base/base.html" %} {% block content %}
-
+<style>
+    .star {
+      display: inline;
+    }
+</style>
 <div class="container">
   <div class="row row-cols-1 row-cols-md-4 g-4">
     {%with messages = get_flashed_messages()%} {%if messages %}
@@ -16,6 +20,11 @@
           >
           <!-- <p class="card-text">{{ book.description }}</p> -->
           <h5>재고 : {{ book.stock }}</h5>
+        {% for n in range(1,6) %} {% if book.rating<n %}
+          <h5 id="star-{{ n }}" class="star" style="color: gray">★</h5>
+          {% else %}
+          <h5 id="star-{{ n }}" class="star" style="color: gold">★</h5>
+          {% endif %} {% endfor %}
 
           <form action="/book/rent/{{ book.id }}" method="post" class="post-form">
             <input type="hidden" value="{{ book.id }}" name="book_id" />

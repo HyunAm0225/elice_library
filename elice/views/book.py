@@ -4,6 +4,7 @@ from elice.models import Book, Rental, Comment
 from elice import db
 from datetime import datetime
 from elice.decorator import login_required
+import math
 
 
 bp = Blueprint('book', __name__, url_prefix='/book')
@@ -15,6 +16,14 @@ def index():
     page = request.args.get('page', type=int, default=1)
     books = Book.query
     books = books.paginate(page, per_page=8)
+    for book in books.items:
+        sum_stars, count = book.rating_stars()
+        if count > 0:
+            avg_stars = math.ceil(sum_stars / count)
+        else:
+            avg_stars = 0
+        book.rating = avg_stars
+        db.session.commit()
     return render_template("book/index.html", books=books)
 
 

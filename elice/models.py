@@ -1,6 +1,7 @@
 from elice import db, bcrypt
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+
 # 유저 DB
 
 
@@ -39,6 +40,14 @@ class Book(db.Model):
     img_url = db.Column(db.String(50), nullable=False)
     stock = db.Column(db.Integer, nullable=False)
     rating = db.Column(db.Integer, nullable=False, default=0)
+
+    def rating_stars(self):
+        sum_stars = 0
+        count = 0
+        for comment in self.comment_set:
+            sum_stars += comment.stars
+            count += 1
+        return sum_stars, count
 
 
 class Rental(db.Model):

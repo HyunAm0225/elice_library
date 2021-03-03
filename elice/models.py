@@ -38,6 +38,7 @@ class Book(db.Model):
     link = db.Column(db.String(256))
     img_url = db.Column(db.String(50), nullable=False)
     stock = db.Column(db.Integer, nullable=False)
+    rating = db.Column(db.Integer, nullable=False, default=0)
 
 
 class Rental(db.Model):

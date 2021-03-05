@@ -28,9 +28,10 @@ def create_app():
     from . import models
 
     # 블루프린트
-    from .views import main_views, account, book
+    from .views import main_views, account, book, comment
     app.register_blueprint(main_views.bp)
     app.register_blueprint(account.bp)
     app.register_blueprint(book.bp)
+    app.register_blueprint(comment.bp)
 
     return app

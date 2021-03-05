@@ -17,9 +17,10 @@ def comment(book_id):
     comment = request.form.get("comment")
     book = Book.query.filter_by(id=book_id).first()
     comment_user = None
-    if Comment.query.filter_by(user_id=user_id).first():
-        comment_user = Comment.query.filter_by(user_id=user_id).first().user_id
+    if Comment.query.filter_by(user_id=user_id, book_id=book_id).first():
+        comment_user = Comment.query.filter_by(user_id=user_id, book_id=book_id).first().user_id
     if user_id == comment_user:
+        print(user_id, comment_user)
         flash(f"이미 댓글을 작성하셨습니다.")
         return redirect(url_for('book.detail', book_id=book_id))
     if comment == None or stars == None:
@@ -27,7 +28,8 @@ def comment(book_id):
         return redirect(url_for('book.detail', book_id=book_id))
     new_comment = Comment(comment=comment, stars=stars, user_id=user_id, book_id=book_id)
     db.session.add(new_comment)
-    db.session.commit()
+    db.session.flush()
+    # print(Comment.query.filter_by(user_id=user_id, book_id=book_id).all())
     book.update_rating_stars(book.comment_set)
     db.session.commit()
     return redirect(url_for('book.detail', book_id=book_id))

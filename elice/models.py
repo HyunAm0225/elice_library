@@ -1,6 +1,7 @@
 from elice import db, bcrypt
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+
 # 유저 DB
 
 
@@ -40,6 +41,18 @@ class Book(db.Model):
     stock = db.Column(db.Integer, nullable=False)
     rating = db.Column(db.Integer, nullable=False, default=0)
 
+    def update_rating_stars(self, comments):
+        sum_stars = 0
+        count = 0
+        for comment in comments:
+            sum_stars += comment.stars
+            count += 1
+        if count > 0:
+            avg_stars = round(sum_stars/count)
+        else:
+            avg_stars = 0
+        self.rating = avg_stars
+
 
 class Rental(db.Model):
     __table_name__ = 'rental'
@@ -61,3 +74,4 @@ class Comment(db.Model):
     book = db.relationship('Book', backref=db.backref('comment_set'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
     user = db.relationship('User', backref=db.backref('comment_set'))
+    created_date = db.Column(db.DateTime, nullable=False, default=datetime.now)

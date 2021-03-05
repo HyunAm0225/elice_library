@@ -4,6 +4,8 @@ from elice.models import Book, Rental, Comment
 from elice import db
 from datetime import datetime
 from elice.decorator import login_required
+from sqlalchemy import desc
+import math
 
 
 bp = Blueprint('book', __name__, url_prefix='/book')
@@ -22,8 +24,8 @@ def index():
 @login_required
 def detail(book_id):
     book = Book.query.filter_by(id=book_id).first()
-    comments = Comment.query.filter_by(book_id=book_id).all()
-    # print(comments)
+    comments = Comment.query.filter_by(book_id=book_id).order_by(desc(Comment.created_date)).all()
+    # 여기서 처리하는지?.
     return render_template('book/detail.html', book=book, comments=comments)
 
 
@@ -33,9 +35,15 @@ def rent(book_id):
     # book_id = request.form.get("book_id")
     user_id = session['user_id']
     book = Book.query.filter_by(id=book_id).first()
+    rent_list = Rental.query.filter_by(user_id=user_id, return_date=None).all()
+    if book_id in [i.book.id for i in rent_list]:
+        error = "이미 대여한 도서입니다."
+        flash(error)
+        return redirect(url_for('book.index'))
     if book.stock < 0:
         error = "책의 재고가 부족합니다."
         flash(error)
+        return redirect(url_for('book.index'))
     rent_book = Rental(book_id=book_id, user_id=user_id)
     book.stock -= 1
     db.session.add(rent_book)
@@ -66,16 +74,3 @@ def return_list():
 
     book_rentals = Rental.query.filter_by(user_id=user_id, return_date=None).all()
     return render_template('book/return_list.html', return_book_list=book_rentals)
-
-
-@bp.route('/comment/<int:book_id>', methods=["POST"])
-def comment(book_id):
-    user_id = session['user_id']
-    stars = request.form.get("rating")
-    comment = request.form.get("comment")
-    if comment == None or stars == None:
-        flash("모든 항목을 채워주세요")
-    new_comment = Comment(comment=comment, stars=stars, user_id=user_id, book_id=book_id)
-    db.session.add(new_comment)
-    db.session.commit()
-    return redirect(url_for('book.detail', book_id=book_id))

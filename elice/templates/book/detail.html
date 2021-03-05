@@ -9,10 +9,11 @@
       position: absolute;
       top: -9999px;
       clip: rect(0, 0, 0, 0);
+      visibility: hidden;
     }
 
     .rate-area:not(:checked) > label {
-        float:right;
+      float:right;
       width: 1.0em;
       overflow: hidden;
       white-space: nowrap;
@@ -92,7 +93,7 @@
   {% endif %} {% endwith %}
   <div class="jumbotron">
     <h5>댓글</h5>
-    <form action="/book/comment/{{ book.id }}" class="form-inline" method="POST">
+    <form action="/comment/{{ book.id }}" class="form-inline" method="POST">
       <textarea class="form-control" name="comment"></textarea>
       <ul class="rate-area">
         <input type="radio" id="5-star" name="rating" value="5" /><label

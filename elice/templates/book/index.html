@@ -25,14 +25,34 @@
           {% else %}
           <h5 id="star-{{ n }}" class="star" style="color: gold">★</h5>
           {% endif %} {% endfor %}
-
-          <form action="/book/rent/{{ book.id }}" method="post" class="post-form">
-            <input type="hidden" value="{{ book.id }}" name="book_id" />
-            <input type="submit" value="대출" class="btn btn-primary form-control rounded-pill" />
-          </form>
+          <button type="button" class="btn btn-primary form-control rounded-pill" data-toggle="modal" data-target="#book-{{ book.id }}">
+            대여하기
+          </button>
         </div>
       </div>
     </div>
+    <div class="modal fade" id="book-{{ book.id }}">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <h5 class="card-title">{{ book.book_name }}를 대여하시겠습니까?</h5>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <form action="/book/rent/{{ book.id }}" method="post" class="post-form">
+                <input type="hidden" value="{{ book.id }}" name="book_id" />
+                <input type="submit" value="대출" class="btn btn-primary" />
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     {% endfor %}
   </div>
   <!-- 페이징처리 시작 -->

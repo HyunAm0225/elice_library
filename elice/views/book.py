@@ -4,6 +4,7 @@ from elice.models import Book, Rental, Comment
 from elice import db
 from datetime import datetime
 from elice.decorator import login_required
+from sqlalchemy import desc
 import math
 
 
@@ -23,7 +24,7 @@ def index():
 @login_required
 def detail(book_id):
     book = Book.query.filter_by(id=book_id).first()
-    comments = Comment.query.filter_by(book_id=book_id).all()
+    comments = Comment.query.filter_by(book_id=book_id).order_by(desc(Comment.created_date)).all()
     # 여기서 처리하는지?.
     return render_template('book/detail.html', book=book, comments=comments)
 

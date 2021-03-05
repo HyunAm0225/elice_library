@@ -74,3 +74,4 @@ class Comment(db.Model):
     book = db.relationship('Book', backref=db.backref('comment_set'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
     user = db.relationship('User', backref=db.backref('comment_set'))
+    created_date = db.Column(db.DateTime, nullable=False, default=datetime.now)

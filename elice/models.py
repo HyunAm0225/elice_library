@@ -41,13 +41,17 @@ class Book(db.Model):
     stock = db.Column(db.Integer, nullable=False)
     rating = db.Column(db.Integer, nullable=False, default=0)
 
-    def rating_stars(self):
+    def update_rating_stars(self, comments):
         sum_stars = 0
         count = 0
-        for comment in self.comment_set:
+        for comment in comments:
             sum_stars += comment.stars
             count += 1
-        return sum_stars, count
+        if count > 0:
+            avg_stars = round(sum_stars/count)
+        else:
+            avg_stars = 0
+        self.rating = avg_stars
 
 
 class Rental(db.Model):

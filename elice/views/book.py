@@ -16,14 +16,6 @@ def index():
     page = request.args.get('page', type=int, default=1)
     books = Book.query
     books = books.paginate(page, per_page=8)
-    for book in books.items:
-        sum_stars, count = book.rating_stars()
-        if count > 0:
-            avg_stars = math.ceil(sum_stars / count)
-        else:
-            avg_stars = 0
-        book.rating = avg_stars
-        db.session.commit()
     return render_template("book/index.html", books=books)
 
 
@@ -42,9 +34,15 @@ def rent(book_id):
     # book_id = request.form.get("book_id")
     user_id = session['user_id']
     book = Book.query.filter_by(id=book_id).first()
+    rent_list = Rental.query.filter_by(user_id=user_id, return_date=None).all()
+    if book_id in [i.book.id for i in rent_list]:
+        error = "이미 대여한 도서입니다."
+        flash(error)
+        return redirect(url_for('book.index'))
     if book.stock < 0:
         error = "책의 재고가 부족합니다."
         flash(error)
+        return redirect(url_for('book.index'))
     rent_book = Rental(book_id=book_id, user_id=user_id)
     book.stock -= 1
     db.session.add(rent_book)

@@ -1,6 +1,17 @@
 {% extends "base/base.html" %} {% block content %}
 <head>
   <style>
+    .wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: lightgrey;
+    }
+  
+    .content {
+      font-family: system-ui, serif;
+      color: lightgrey;
+    }
     .rate-area {
       border-style: none;
     }
@@ -66,12 +77,20 @@
         <p>쪽 : {{ book.pages }}p</p>
         <p>ISBN : {{ book.isbn }}</p>
         <p>출판일 : {{ book.publication_date.strftime('%Y-%m-%d') }}</p>
+        <div>평균 평점 : 
+          {% for n in range(1,6) %} {% if book.rating<n %}
+          <h5 id="star-{{ n }}" class="star" style="color: gray">★</h5>
+          {% else %}
+          <h5 id="star-{{ n }}" class="star" style="color: gold">★</h5>
+          {% endif %} {% endfor %}
+        </div>
       </div>
     </div>
   </div>
   <div class="jumbotron" style="margin: 2rem">
     <h5>댓글 목록</h5>
     <div style="background-color: #f1f3f5; margin:1rem; padding:1rem">
+      {% if comments %}
       {% for comment in comments %}
       <p>작성자 : {{ comment.user.fullname }}</p>
       <p>댓글 : {{ comment.comment }}</p>
@@ -84,6 +103,13 @@
         </span>
         <hr>
       {% endfor %}
+      {% else %}
+      <div class="wrapper">
+        <div class="content">
+          <h5 style="color: black">작성된 댓글이 없습니다.</h5>
+        </div>
+      </div>
+      {% endif %}
     </div>
   </div>
   {% with messages = get_flashed_messages() %} {% if messages %}

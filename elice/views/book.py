@@ -17,7 +17,7 @@ def index():
     page = request.args.get('page', type=int, default=1)
     books = Book.query
     books = books.paginate(page, per_page=8)
-    return render_template("book/index.html", books=books)
+    return render_template("book/index.html", books=books, now=datetime.now())
 
 
 @bp.route('/detail/<int:book_id>')
@@ -73,4 +73,17 @@ def return_list():
         return redirect(url_for('book.return_list'))
 
     book_rentals = Rental.query.filter_by(user_id=user_id, return_date=None).all()
-    return render_template('book/return_list.html', return_book_list=book_rentals)
+    return render_template('book/return_list.html', return_book_list=book_rentals, now=datetime.now())
+
+
+@bp.route('/search', methods=["GET", "POST"])
+@login_required
+def search():
+    if request.method == "POST":
+        key = request.form['keyword']
+        key = f"%{key}%"
+        book_list = Book.query.filter(Book.book_name.like(key)).all()
+        # print(book_list.all())
+        return render_template('book/search.html', book_list=book_list)
+    else:
+        return render_template('book/search.html')

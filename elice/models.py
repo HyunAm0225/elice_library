@@ -45,7 +45,7 @@ class Book(db.Model):
         sum_stars = 0
         count = 0
         for comment in comments:
-            sum_stars += comment.stars
+            sum_stars += int(comment.stars)
             count += 1
         if count > 0:
             avg_stars = round(sum_stars/count)

@@ -1,0 +1,151 @@
+{% extends "base/base.html" %} {% block content %}
+<head>
+  <style>
+    .wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: lightgrey;
+    }
+  
+    .content {
+      font-family: system-ui, serif;
+      color: lightgrey;
+    }
+    .rate-area {
+      border-style: none;
+    }
+
+    .rate-area:not(:checked) > input {
+      position: absolute;
+      top: -9999px;
+      clip: rect(0, 0, 0, 0);
+      visibility: hidden;
+    }
+
+    .rate-area:not(:checked) > label {
+      float:right;
+      width: 1.0em;
+      overflow: hidden;
+      white-space: nowrap;
+      cursor: pointer;
+      font-size: 180%;
+      color: lightgrey;
+    }
+
+    .rate-area:not(:checked) > label:before {
+      content: "★";
+    }
+
+    .rate-area > input:checked ~ label {
+      color: gold;
+    }
+
+    .rate-area:not(:checked) > label:hover,
+    .rate-area:not(:checked) > label:hover ~ label {
+      color: gold;
+    }
+
+    .rate-area > input:checked + label:hover,
+    .rate-area > input:checked + label:hover ~ label,
+    .rate-area > input:checked ~ label:hover,
+    .rate-area > input:checked ~ label:hover ~ label,
+    .rate-area > label:hover ~ input:checked ~ label {
+      color: gold;
+    }
+
+    .jumbotron {
+      margin: 2rem;
+    }
+    .star {
+      display: inline;
+    }
+  </style>
+</head>
+<br />
+<div class="container">
+  <div class="jumbotron rounded" style="border: 1px; padding: 3rem; background-color: #f1f3f5">
+    <h1 class="display-4">{{ book.book_name }}</h1>
+    <div class="row">
+      <img src="{{ book.img_url }}" class="col-sm-4" alt="..." />
+      <div class="lead col-sm-8">
+        <p>{{ book.description }}</p>
+        <hr />
+        <p><b>{{ book.author }}</b> 지음</p>
+        <hr />
+        <p>출판사 : {{ book.publisher }}</p>
+        <p>쪽 : {{ book.pages }}p</p>
+        <p>ISBN : {{ book.isbn }}</p>
+        <p>출판일 : {{ book.publication_date.strftime('%Y-%m-%d') }}</p>
+        <div>평균 평점 : 
+          {% for n in range(1,6) %} {% if book.rating<n %}
+          <h5 id="star-{{ n }}" class="star" style="color: gray">★</h5>
+          {% else %}
+          <h5 id="star-{{ n }}" class="star" style="color: gold">★</h5>
+          {% endif %} {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="jumbotron" style="margin: 2rem">
+    <h5>댓글 목록</h5>
+    <div style="background-color: #f1f3f5; margin:1rem; padding:1rem">
+      {% if comments %}
+      {% for comment in comments %}
+      <p>작성자 : {{ comment.user.fullname }}</p>
+      <p>댓글 : {{ comment.comment }}</p>
+
+          {% for n in range(1,6) %} {% if comment.stars<n %}
+          <h5 id="star-{{ n }}" class="star" style="color: gray">★</h5>
+          {% else %}
+          <h5 id="star-{{ n }}" class="star" style="color: gold">★</h5>
+          {% endif %} {% endfor %}
+        </span>
+        <hr>
+      {% endfor %}
+      {% else %}
+      <div class="wrapper">
+        <div class="content">
+          <h5 style="color: black">작성된 댓글이 없습니다.</h5>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% with messages = get_flashed_messages() %} {% if messages %}
+  <script type="text/javascript">
+    alert("{{messages[-1]}}");
+  </script>
+  {% endif %} {% endwith %}
+  <div class="jumbotron">
+    <h5>댓글</h5>
+    <form action="/comment/{{ book.id }}" class="form-inline" method="POST">
+      <textarea class="form-control" name="comment"></textarea>
+      <ul class="rate-area">
+        <input type="radio" id="5-star" name="rating" value="5" /><label
+          for="5-star"
+          title="Amazing"
+          >5 stars</label
+        >
+        <input type="radio" id="4-star" name="rating" value="4" /><label for="4-star" title="Good"
+          >4 stars</label
+        >
+        <input type="radio" id="3-star" name="rating" value="3" /><label
+          for="3-star"
+          title="Average"
+          >3 stars</label
+        >
+        <input type="radio" id="2-star" name="rating" value="2" /><label
+          for="2-star"
+          title="Not Good"
+          >2 stars</label
+        >
+        <input type="radio" id="1-star" name="rating" value="1" /><label for="1-star" title="Bad"
+          >1 star</label
+        >
+      </ul>
+      <input type="submit" class="btn btn-primary form-control rounded-pill" value="댓글 추가" />
+    </form>
+  </div>
+</div>
+{% endblock %}

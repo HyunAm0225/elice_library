@@ -1,0 +1,46 @@
+{% extends "base/base.html" %} {% block content %}
+
+<div class="container">
+  <h1 style="text-align: center">도서 대여 기록</h1>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">도서명</th>
+        <th scope="col">저자</th>
+        <th scope="col">출판사</th>
+        <th scope="col">대출일</th>
+        <th scope="col">반납일</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if book_rentals %} {% for book_rental in book_rentals %}
+      <tr>
+        <th scope="col">{{ loop.index }}</th>
+        <td>
+          <a
+            href="/book/detail/{{ book_rental.book.id }}"
+            style="text-decoration: None; color: black"
+            >{{ book_rental.book.book_name }}</a
+          >
+        </td>
+        <td>{{ book_rental.book.author }}</td>
+        <td>{{ book_rental.book.publisher }}</td>
+        <td>{{ book_rental.rent_date.strftime("%Y/%m/%d %H:%M:%S") }}</td>
+        {% if book_rental.return_date %}
+        <td>{{ book_rental.return_date.strftime("%Y/%m/%d %H:%M:%S") }}</td>
+        {% else %}
+        <td></td>
+      </tr>
+      {% endif %} {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="wrapper">
+    <div class="content">
+      <h1 style="color: black">책을 대여한 기록이 없습니다.</h1>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

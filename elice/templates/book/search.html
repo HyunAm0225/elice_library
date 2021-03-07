@@ -1,0 +1,88 @@
+{% extends "base/base.html" %} {% block content %}
+<style>
+    .star {
+      display: inline;
+    }
+    .wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 25vh;
+        color: lightgrey;
+      }
+    
+      .content {
+        font-family: system-ui, serif;
+        font-size: 2rem;
+        padding: 3rem;
+        border-radius: 1rem;
+        color: lightgrey;
+      }
+      .card-img-top {
+        width: 100%;
+        height: 15vw;
+        object-fit: cover;
+    }
+</style>
+<div class="container">
+  <h1>도서 찾기 시스템</h1>
+  <br />
+  <form action="/book/search" method="post">
+    <p>도서명 입력 : <input type="text" id="keyword" name="keyword" /> <input type="submit" value="Submit" class="btn btn-primary btn-sm" /></p>    
+  </form>
+  <br /><br />
+  <div class="py-6 bg-light">
+  <div class="row">
+  {% if book_list %}
+    {% for book in book_list %}
+    <div class="col-md-3">
+        <div class="card mb-3 box-shadow">
+          <img src="{{ book.img_url }}" class="card-img-top" alt="..." />
+          <div class="card-body">
+            <a href="/book/detail/{{ book.id }}" style="text-decoration: None; color: black"
+              ><h5 class="card-title text-truncate">{{ book.book_name }}</h5></a
+            >
+            <!-- <p class="card-text">{{ book.description }}</p> -->
+            <h5>재고 : {{ book.stock }}</h5>
+          {% for n in range(1,6) %} {% if book.rating<n %}
+            <h5 id="star-{{ n }}" class="star" style="color: gray">★</h5>
+            {% else %}
+            <h5 id="star-{{ n }}" class="star" style="color: gold">★</h5>
+            {% endif %} {% endfor %}
+            <button type="button" class="btn btn-primary form-control rounded-pill" data-bs-toggle="modal" data-bs-target="#book-{{ book.id }}">
+              대여하기
+            </button>
+          </div>
+        </div>
+      </div>
+    <div class="modal fade" id="book-{{ book.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">{{ book.book_name }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <h5 class="card-title">{{ book.book_name }}를 대여하시겠습니까?</h5>
+        </div>
+          <div class="modal-footer">
+            <form action="/book/rent/{{ book.id }}" method="post" class="post-form">
+              <input type="hidden" value="{{ book.id }}" name="book_id" />
+              <input type="submit" value="대출" class="btn btn-primary" />
+            </form>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+</div>
+    <div class="wrapper">
+     <div class="content">
+       <h1 style="color: black">검색된 도서가 없습니다.</h1>
+     </div>
+    </div>
+      {% endif %}
+{% endblock %}

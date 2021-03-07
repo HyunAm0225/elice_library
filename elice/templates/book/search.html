@@ -18,6 +18,11 @@
         border-radius: 1rem;
         color: lightgrey;
       }
+      .card-img-top {
+        width: 100%;
+        height: 15vw;
+        object-fit: cover;
+    }
 </style>
 <div class="container">
   <h1>도서 찾기 시스템</h1>
@@ -26,29 +31,30 @@
     <p>도서명 입력 : <input type="text" id="keyword" name="keyword" /> <input type="submit" value="Submit" class="btn btn-primary btn-sm" /></p>    
   </form>
   <br /><br />
-  <div class="row row-cols-1 row-cols-md-4 g-4">
+  <div class="py-6 bg-light">
+  <div class="row">
   {% if book_list %}
     {% for book in book_list %}
-    <div class="col">
-      <div class="card" style="width: 18rem">
-        <img src="{{ book.img_url }}" class="card-img-top" alt="..." />
-        <div class="card-body">
-          <a href="/book/detail/{{ book.id }}" style="text-decoration: None; color: black"
-            ><h5 class="card-title">{{ book.book_name }}</h5></a
-          >
-          <!-- <p class="card-text">{{ book.description }}</p> -->
-          <h5>재고 : {{ book.stock }}</h5>
-        {% for n in range(1,6) %} {% if book.rating<n %}
-          <h5 id="star-{{ n }}" class="star" style="color: gray">★</h5>
-          {% else %}
-          <h5 id="star-{{ n }}" class="star" style="color: gold">★</h5>
-          {% endif %} {% endfor %}
-          <button type="button" class="btn btn-primary form-control rounded-pill" data-bs-toggle="modal" data-bs-target="#book-{{ book.id }}">
-            대여하기
-          </button>
+    <div class="col-md-3">
+        <div class="card mb-3 box-shadow">
+          <img src="{{ book.img_url }}" class="card-img-top" alt="..." />
+          <div class="card-body">
+            <a href="/book/detail/{{ book.id }}" style="text-decoration: None; color: black"
+              ><h5 class="card-title text-truncate">{{ book.book_name }}</h5></a
+            >
+            <!-- <p class="card-text">{{ book.description }}</p> -->
+            <h5>재고 : {{ book.stock }}</h5>
+          {% for n in range(1,6) %} {% if book.rating<n %}
+            <h5 id="star-{{ n }}" class="star" style="color: gray">★</h5>
+            {% else %}
+            <h5 id="star-{{ n }}" class="star" style="color: gold">★</h5>
+            {% endif %} {% endfor %}
+            <button type="button" class="btn btn-primary form-control rounded-pill" data-bs-toggle="modal" data-bs-target="#book-{{ book.id }}">
+              대여하기
+            </button>
+          </div>
         </div>
       </div>
-    </div>
     <div class="modal fade" id="book-{{ book.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">

@@ -1,6 +1,23 @@
 {% extends "base/base.html" %} {% block content %}
+<style>
+  .wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: lightgrey;
+  }
 
+  .content {
+    font-family: system-ui, serif;
+    font-size: 2rem;
+    padding: 3rem;
+    border-radius: 1rem;
+    color: lightgrey;
+  }
+</style>
 <div class="container">
+  {% if return_book_list %}
   <div class="row row-cols-1 row-cols-md-3 g-4">
     {% for return_book in return_book_list %}
     <div class="col">
@@ -8,14 +25,61 @@
         <img src="{{ return_book.book.img_url }}" class="card-img-top" alt="..." />
         <div class="card-body">
           <h5 class="card-title">{{ return_book.book.book_name }}</h5>
-          <form action="/book/return_list" method="post" class="post-form">
-            <input type="hidden" value="{{ return_book.book.id }}" name="book_id" />
-            <input type="submit" value="반납" class="btn btn-primary" />
-          </form>
+          <p>대여날짜 : {{ return_book.rent_date.strftime('%Y-%m-%d') }}~</p>
+          <br />
+          <button
+            type="button"
+            class="btn btn-primary form-control rounded-pill"
+            data-bs-toggle="modal"
+            data-bs-target="#book-{{ return_book.book.id }}"
+          >
+            반납하기
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal fade"
+      id="book-{{ return_book.book.id }}"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="staticBackdropLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">{{ return_book.book.book_name }}</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" onload="time()">
+            <h5 class="card-title">{{ return_book.book.book_name }}를 반납하시겠습니까?</h5>
+            <h5 class="card-title">반납 시간 : {{ now.strftime("%Y/%m/%d %H:%M:%S") }}</h5>
+          </div>
+          <div class="modal-footer">
+            <form action="/book/return_list" method="post" class="post-form">
+              <input type="hidden" value="{{ return_book.book.id }}" name="book_id" />
+              <input type="submit" value="반납" class="btn btn-primary form-control rounded-pill" />
+            </form>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
         </div>
       </div>
     </div>
     {% endfor %}
   </div>
+  {% else %}
+  <div class="wrapper">
+    <div class="content">
+      <h1 style="color: black">반납할 도서가 없습니다.</h1>
+    </div>
+  </div>
+  {% endif %}
 </div>
 {% endblock %}
